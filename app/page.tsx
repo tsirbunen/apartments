@@ -11,7 +11,7 @@ export default function Home() {
 
         <div className="flex flex-col gap-3">
           <Link
-            href="/listings"
+            href="/apartments"
             className="bg-gray-900 text-white rounded-xl px-6 py-3 text-sm font-medium hover:bg-gray-700 transition-colors"
           >
             Lauttasaari, Helsinki
