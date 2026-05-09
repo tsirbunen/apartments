@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import type { OikotieCard } from '@/services/oikotie'
 import { DEFAULT_FILTERS, type Filters } from '@/lib/filters'
+import { DEFAULT_LOCATIONS, type OikotieLocation } from '@/lib/locations'
 import ApartmentCard from '@/components/ApartmentCard'
 import PriceFilter from '@/components/PriceFilter'
 import SizeFilter from '@/components/SizeFilter'
@@ -17,7 +18,7 @@ export default function ApartmentsPage() {
   const [loading, setLoading] = useState(true)
   const [openCount, setOpenCount] = useState(0)
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
-  const [locations, setLocations] = useState<string[]>(['Lauttasaari'])
+  const [locations, setLocations] = useState<OikotieLocation[]>(DEFAULT_LOCATIONS)
   const [filtersOpen, setFiltersOpen] = useState(true)
 
   function handleOpenChange(delta: 1 | -1) {
@@ -30,7 +31,7 @@ export default function ApartmentsPage() {
 
   function filterChips(): string[] {
     const chips: string[] = []
-    locations.forEach((l) => chips.push(l))
+    locations.forEach((l) => chips.push(l[2].replace(/, Helsinki$/, '')))
     const { price, size, rooms, omaTontti, uudiskohde } = filters
     const fmtEur = (n: number) => n.toLocaleString('fi-FI') + ' €'
     const fmtSqm = (n: number) => n.toLocaleString('fi-FI') + ' m²'
@@ -69,6 +70,8 @@ export default function ApartmentsPage() {
       params.set('sizeMax', String(filters.size.max))
     filters.rooms.forEach((r) => params.append('rooms', String(r)))
     if (filters.omaTontti) params.set('omaTontti', '1')
+    if (filters.uudiskohde) params.set('uudiskohde', '1')
+    if (locations.length > 0) params.set('locations', JSON.stringify(locations))
 
     const qs = params.toString()
     setLoading(true)
@@ -140,7 +143,7 @@ export default function ApartmentsPage() {
             <>
               <div className="mb-5">
                 <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">
-                  Kaupunginosa Helsingissä
+                  Sijainti
                 </p>
                 <LocationSelector
                   locations={locations}

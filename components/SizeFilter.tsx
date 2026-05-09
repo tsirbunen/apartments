@@ -82,7 +82,9 @@ export default function SizeFilter({ value, onChange, onOpenChange }: Props) {
       </button>
 
       {open && (
-        <div className="absolute top-full mt-2 z-20 left-0 sm:left-1/2 sm:-translate-x-1/2 min-w-64 rounded-2xl bg-white p-4 shadow-xl">
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => changeOpen(false)} />
+          <div className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100%-2rem)] max-w-sm rounded-2xl bg-white p-4 shadow-xl">
           <p className="mb-3 text-sm font-medium text-gray-900">Kokohaarukka</p>
           <div className="flex gap-2">
             <div className="flex-1">
@@ -125,10 +127,11 @@ export default function SizeFilter({ value, onChange, onOpenChange }: Props) {
               onClick={handleApply}
               className="flex-1 rounded-lg bg-gray-900 px-3 py-2 text-sm text-white transition-colors hover:bg-gray-700"
             >
-              Hae
+              Aseta
             </button>
           </div>
-        </div>
+          </div>
+        </>
       )}
     </div>
   )
