@@ -15,7 +15,7 @@ export default function ApartmentCard({ card }: { card: OikotieCard }) {
   const bd = card.buildingData
   const floorInfo =
     bd?.floor != null && bd?.floorCount != null
-      ? `${bd.floor}/${bd.floorCount} krs`
+      ? `${bd.floor}/${bd.floorCount}`
       : null
 
   return (
@@ -30,41 +30,41 @@ export default function ApartmentCard({ card }: { card: OikotieCard }) {
         <img
           src={imageUrl}
           alt={card.description}
-          className="w-full h-48 object-cover"
+          className="w-full h-64 object-cover"
         />
       ) : (
-        <div className="w-full h-48 bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
+        <div className="w-full h-64 bg-gray-200 flex items-center justify-center text-gray-400 text-sm">
           No image
         </div>
       )}
       <div className="p-3 flex flex-col gap-0.5 flex-1">
-        <p className="text-sm font-semibold text-gray-900">
-          {card.price}
+        <div className="flex justify-between items-baseline">
+          <span className="text-sm font-semibold text-gray-900">{card.price}</span>
           {pricePerSqm && (
-            <span className="text-xs font-normal text-gray-500 ml-2">
-              – {pricePerSqm} €/m²
-            </span>
+            <span className="text-xs text-gray-500">{pricePerSqm} €/m²</span>
           )}
-        </p>
-        {card.roomConfiguration && (
-          <p className="text-xs text-gray-700">{card.roomConfiguration}</p>
-        )}
+        </div>
         {card.size && (
-          <p className="text-xs text-gray-700">
-            <span className="font-semibold">{card.size} m²</span>
+          <div className="flex justify-between items-baseline">
+            <span className="text-xs font-semibold text-gray-700">{card.size} m²</span>
             {bd?.address && (
-              <span className="font-normal text-gray-500 ml-1">
-                – {bd.address}
-              </span>
+              <span className="text-xs text-gray-500">{bd.address}</span>
             )}
-          </p>
+          </div>
         )}
-        {(floorInfo || bd?.year) && (
-          <p className="text-xs text-gray-600">
-            {floorInfo}
-            {floorInfo && bd?.year && ' – '}
-            {bd?.year && bd.year}
-          </p>
+        {(card.roomConfiguration || floorInfo || bd?.year) && (
+          <div className="flex justify-between items-baseline">
+            {card.roomConfiguration ? (
+              <span className="text-xs font-bold text-gray-700">
+                {card.roomConfiguration.match(/^\d+[hH]/)?.[0] ?? card.roomConfiguration.split(',')[0].trim()}
+              </span>
+            ) : <span />}
+            <span className="text-xs text-gray-600">
+              {floorInfo}
+              {floorInfo && bd?.year && ' – '}
+              {bd?.year}
+            </span>
+          </div>
         )}
         {card.brand?.name && (
           <p className="text-xs text-gray-400 mt-auto pt-1.5 line-clamp-1">

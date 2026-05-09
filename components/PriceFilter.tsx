@@ -50,9 +50,9 @@ export default function PriceFilter({ value, onChange, onOpenChange }: Props) {
     if (!isActive) return 'Hinta'
     const fmt = (n: number) => n.toLocaleString('fi-FI') + ' €'
     if (value.min !== null && value.max !== null)
-      return `${fmt(value.min)} - ${fmt(value.max)}`
-    if (value.min !== null) return `${fmt(value.min)} -`
-    return `- ${fmt(value.max!)}`
+      return `${fmt(value.min)} ... ${fmt(value.max)}`
+    if (value.min !== null) return `min ${fmt(value.min)}`
+    return `max ${fmt(value.max!)}`
   }
 
   function fmtInput(n: number | null) {
@@ -91,7 +91,7 @@ export default function PriceFilter({ value, onChange, onOpenChange }: Props) {
       </button>
 
       {open && (
-        <div className="absolute top-full mt-2 left-0 z-20 min-w-64 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg">
+        <div className="absolute top-full mt-2 z-20 left-0 sm:left-1/2 sm:-translate-x-1/2 min-w-64 rounded-2xl bg-white p-4 shadow-xl">
           <p className="mb-3 text-sm font-medium text-gray-900">Hintahaarukka</p>
           <div className="flex gap-2">
             <div className="flex-1">

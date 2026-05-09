@@ -57,7 +57,11 @@ export default function RoomsFilter({ value, onChange, onOpenChange }: Props) {
   function buttonLabel() {
     if (!isActive) return 'Huoneet'
     const sorted = [...value].sort((a, b) => a - b)
-    return sorted.map(LABEL).join(', ') + ' h'
+    const isRange =
+      sorted.length > 1 &&
+      sorted.every((n, i) => i === 0 || n === sorted[i - 1] + 1)
+    if (isRange) return `${LABEL(sorted[0])}-${LABEL(sorted[sorted.length - 1])}h`
+    return sorted.map((n) => LABEL(n) + 'h').join(', ')
   }
 
   return (
@@ -87,7 +91,7 @@ export default function RoomsFilter({ value, onChange, onOpenChange }: Props) {
       </button>
 
       {open && (
-        <div className="absolute top-full mt-2 left-0 z-20 rounded-2xl border border-gray-200 bg-white p-4 shadow-lg">
+        <div className="absolute top-full mt-2 z-20 left-0 sm:left-1/2 sm:-translate-x-1/2 rounded-2xl bg-white p-4 shadow-xl">
           <p className="mb-3 text-sm font-medium text-gray-900">Huoneet</p>
           <div className="flex gap-2">
             {OPTIONS.map((n) => {

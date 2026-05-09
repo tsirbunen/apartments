@@ -12,7 +12,7 @@ export default function LocationSelector({ locations, onChange }: Props) {
   const inputRef = useRef<HTMLInputElement>(null)
 
   function add() {
-    const trimmed = input.trim()
+    const trimmed = input.trim().replace(/^\w/, (c) => c.toUpperCase())
     if (!trimmed || locations.includes(trimmed)) {
       setInput('')
       return
@@ -42,7 +42,7 @@ export default function LocationSelector({ locations, onChange }: Props) {
       {locations.map((loc) => (
         <span
           key={loc}
-          className="flex items-center gap-1 rounded-full bg-gray-900 px-4 py-1 text-xl font-bold text-white"
+          className="flex items-center gap-1 rounded-full bg-gray-900 px-3 py-1 text-sm font-bold text-white"
         >
           {loc}
           <button
@@ -64,8 +64,8 @@ export default function LocationSelector({ locations, onChange }: Props) {
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={add}
-        placeholder={'+ alue'}
-        className="w-24 rounded-full ring-1 ring-dashed ring-gray-300 px-2.5 py-2.5 text-xs text-gray-700 placeholder:text-gray-400 focus:ring-gray-500 focus:outline-none bg-transparent"
+        placeholder={'+ muu kaupunginosa'}
+        className="w-48 rounded-full ring-1 ring-dashed ring-gray-300 px-2.5 py-2.5 text-xs text-gray-700 placeholder:text-gray-400 focus:ring-gray-500 focus:outline-none bg-transparent"
       />
     </div>
   )
