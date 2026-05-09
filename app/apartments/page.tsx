@@ -18,7 +18,8 @@ export default function ApartmentsPage() {
   const [loading, setLoading] = useState(true)
   const [openCount, setOpenCount] = useState(0)
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
-  const [locations, setLocations] = useState<OikotieLocation[]>(DEFAULT_LOCATIONS)
+  const [locations, setLocations] =
+    useState<OikotieLocation[]>(DEFAULT_LOCATIONS)
   const [filtersOpen, setFiltersOpen] = useState(true)
 
   function handleOpenChange(delta: 1 | -1) {
@@ -188,7 +189,11 @@ export default function ApartmentsPage() {
                 <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">
                   Tallennetut haut
                 </p>
-                <SavedQueries filters={filters} onLoad={(f) => setFilters(f)} />
+                <SavedQueries
+                  filters={filters}
+                  onLoad={(f) => setFilters(f)}
+                  locations={locations}
+                />
               </div>
             </>
           ) : (

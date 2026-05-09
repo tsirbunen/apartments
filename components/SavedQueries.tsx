@@ -7,17 +7,19 @@ import {
   type Filters,
   type SavedQuery,
 } from '@/lib/filters'
+import type { OikotieLocation } from '@/lib/locations'
 
 interface Props {
   filters: Filters
-  onLoad: (filters: Filters) => void
+  locations: OikotieLocation[]
+  onLoad: (filters: Filters, locations: OikotieLocation[]) => void
 }
 
 function filtersEqual(a: Filters, b: Filters) {
   return JSON.stringify(a) === JSON.stringify(b)
 }
 
-export default function SavedQueries({ filters, onLoad }: Props) {
+export default function SavedQueries({ filters, locations, onLoad }: Props) {
   const [queries, setQueries] = useState<SavedQuery[]>([])
   const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
@@ -47,6 +49,7 @@ export default function SavedQueries({ filters, onLoad }: Props) {
       id: crypto.randomUUID(),
       name: trimmed,
       filters,
+      locations,
       savedAt: Date.now(),
     }
     const updated = [query, ...queries]
@@ -115,7 +118,7 @@ export default function SavedQueries({ filters, onLoad }: Props) {
                     key={q.id}
                     className="group flex items-center justify-between gap-2 px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
                     onClick={() => {
-                      onLoad(q.filters)
+                      onLoad(q.filters, q.locations ?? [])
                       setOpen(false)
                     }}
                   >

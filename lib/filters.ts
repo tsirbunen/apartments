@@ -10,6 +10,7 @@ export interface SavedQuery {
   id: string
   name: string
   filters: Filters
+  locations: import('@/lib/locations').OikotieLocation[]
   savedAt: number
 }
 
