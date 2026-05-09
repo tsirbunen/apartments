@@ -1,16 +1,19 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import type { Filters } from '@/lib/filters'
 
-interface SizeRange {
-  min: number | null
-  max: number | null
+type SizeRange = Filters['size']
+
+interface Props {
+  value: SizeRange
+  onChange: (value: SizeRange) => void
+  onOpenChange?: (open: boolean) => void
 }
 
-export default function SizeFilter({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
+export default function SizeFilter({ value, onChange, onOpenChange }: Props) {
   const [open, setOpen] = useState(false)
-  const [applied, setApplied] = useState<SizeRange>({ min: null, max: null })
-  const [draft, setDraft] = useState<SizeRange>({ min: null, max: null })
+  const [draft, setDraft] = useState<SizeRange>(value)
   const ref = useRef<HTMLDivElement>(null)
 
   function changeOpen(next: boolean) {
@@ -27,31 +30,29 @@ export default function SizeFilter({ onOpenChange }: { onOpenChange?: (open: boo
   }, [open])
 
   function handleOpen() {
-    setDraft(applied)
+    setDraft(value)
     changeOpen(true)
   }
 
   function handleApply() {
-    setApplied(draft)
+    onChange(draft)
     changeOpen(false)
   }
 
   function handleClear() {
-    const empty = { min: null, max: null }
-    setDraft(empty)
-    setApplied(empty)
+    onChange({ min: null, max: null })
     changeOpen(false)
   }
 
-  const isActive = applied.min !== null || applied.max !== null
+  const isActive = value.min !== null || value.max !== null
 
   function buttonLabel() {
     if (!isActive) return 'Koko'
     const fmt = (n: number) => n.toLocaleString('fi-FI') + ' m²'
-    if (applied.min !== null && applied.max !== null)
-      return `${fmt(applied.min)} - ${fmt(applied.max)}`
-    if (applied.min !== null) return `${fmt(applied.min)} -`
-    return `- ${fmt(applied.max!)}`
+    if (value.min !== null && value.max !== null)
+      return `${fmt(value.min)} - ${fmt(value.max)}`
+    if (value.min !== null) return `${fmt(value.min)} -`
+    return `- ${fmt(value.max!)}`
   }
 
   return (

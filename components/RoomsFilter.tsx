@@ -5,10 +5,15 @@ import { useEffect, useRef, useState } from 'react'
 const OPTIONS = [1, 2, 3, 4, 5] as const
 const LABEL = (n: number) => (n === 5 ? '5+' : String(n))
 
-export default function RoomsFilter({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
+interface Props {
+  value: number[]
+  onChange: (value: number[]) => void
+  onOpenChange?: (open: boolean) => void
+}
+
+export default function RoomsFilter({ value, onChange, onOpenChange }: Props) {
   const [open, setOpen] = useState(false)
-  const [applied, setApplied] = useState<Set<number>>(new Set())
-  const [draft, setDraft] = useState<Set<number>>(new Set())
+  const [draft, setDraft] = useState<Set<number>>(new Set(value))
   const ref = useRef<HTMLDivElement>(null)
 
   function changeOpen(next: boolean) {
@@ -25,18 +30,17 @@ export default function RoomsFilter({ onOpenChange }: { onOpenChange?: (open: bo
   }, [open])
 
   function handleOpen() {
-    setDraft(new Set(applied))
+    setDraft(new Set(value))
     changeOpen(true)
   }
 
   function handleApply() {
-    setApplied(new Set(draft))
+    onChange([...draft].sort((a, b) => a - b))
     changeOpen(false)
   }
 
   function handleClear() {
-    setDraft(new Set())
-    setApplied(new Set())
+    onChange([])
     changeOpen(false)
   }
 
@@ -48,11 +52,11 @@ export default function RoomsFilter({ onOpenChange }: { onOpenChange?: (open: bo
     })
   }
 
-  const isActive = applied.size > 0
+  const isActive = value.length > 0
 
   function buttonLabel() {
     if (!isActive) return 'Huoneet'
-    const sorted = [...applied].sort((a, b) => a - b)
+    const sorted = [...value].sort((a, b) => a - b)
     return sorted.map(LABEL).join(', ') + ' h'
   }
 

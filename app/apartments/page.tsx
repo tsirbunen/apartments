@@ -2,20 +2,27 @@
 
 import { useEffect, useState } from 'react'
 import type { OikotieCard } from '@/services/oikotie'
+import { DEFAULT_FILTERS, type Filters } from '@/lib/filters'
 import ApartmentCard from '@/components/ApartmentCard'
 import PriceFilter from '@/components/PriceFilter'
 import SizeFilter from '@/components/SizeFilter'
 import ToggleFilter from '@/components/ToggleFilter'
 import RoomsFilter from '@/components/RoomsFilter'
+import SavedQueries from '@/components/SavedQueries'
 
 export default function ApartmentsPage() {
   const [cards, setCards] = useState<OikotieCard[]>([])
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [openCount, setOpenCount] = useState(0)
+  const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
 
   function handleOpenChange(delta: 1 | -1) {
     setOpenCount((c) => Math.max(0, c + delta))
+  }
+
+  function updateFilter<K extends keyof Filters>(key: K, value: Filters[K]) {
+    setFilters((f) => ({ ...f, [key]: value }))
   }
 
   useEffect(() => {
@@ -41,11 +48,38 @@ export default function ApartmentsPage() {
         </h1>
 
         <div className="relative z-20 mb-6 flex flex-wrap gap-2">
-          <PriceFilter onOpenChange={(o) => handleOpenChange(o ? 1 : -1)} />
-          <RoomsFilter onOpenChange={(o) => handleOpenChange(o ? 1 : -1)} />
-          <SizeFilter onOpenChange={(o) => handleOpenChange(o ? 1 : -1)} />
-          <ToggleFilter label="Oma tontti" />
-          <ToggleFilter label="Uudiskohde" />
+          <PriceFilter
+            value={filters.price}
+            onChange={(v) => updateFilter('price', v)}
+            onOpenChange={(o) => handleOpenChange(o ? 1 : -1)}
+          />
+          <RoomsFilter
+            value={filters.rooms}
+            onChange={(v) => updateFilter('rooms', v)}
+            onOpenChange={(o) => handleOpenChange(o ? 1 : -1)}
+          />
+          <SizeFilter
+            value={filters.size}
+            onChange={(v) => updateFilter('size', v)}
+            onOpenChange={(o) => handleOpenChange(o ? 1 : -1)}
+          />
+          <ToggleFilter
+            label="Oma tontti"
+            value={filters.omaTontti}
+            onChange={(v) => updateFilter('omaTontti', v)}
+          />
+          <ToggleFilter
+            label="Uudiskohde"
+            value={filters.uudiskohde}
+            onChange={(v) => updateFilter('uudiskohde', v)}
+          />
+
+          <div className="ml-auto">
+            <SavedQueries
+              filters={filters}
+              onLoad={(f) => setFilters(f)}
+            />
+          </div>
         </div>
 
         <p className="text-gray-500 mb-8 text-sm">

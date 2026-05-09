@@ -1,16 +1,19 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import type { Filters } from '@/lib/filters'
 
-interface PriceRange {
-  min: number | null
-  max: number | null
+type PriceRange = Filters['price']
+
+interface Props {
+  value: PriceRange
+  onChange: (value: PriceRange) => void
+  onOpenChange?: (open: boolean) => void
 }
 
-export default function PriceFilter({ onOpenChange }: { onOpenChange?: (open: boolean) => void }) {
+export default function PriceFilter({ value, onChange, onOpenChange }: Props) {
   const [open, setOpen] = useState(false)
-  const [applied, setApplied] = useState<PriceRange>({ min: null, max: null })
-  const [draft, setDraft] = useState<PriceRange>({ min: null, max: null })
+  const [draft, setDraft] = useState<PriceRange>(value)
   const ref = useRef<HTMLDivElement>(null)
 
   function changeOpen(next: boolean) {
@@ -27,34 +30,32 @@ export default function PriceFilter({ onOpenChange }: { onOpenChange?: (open: bo
   }, [open])
 
   function handleOpen() {
-    setDraft(applied)
+    setDraft(value)
     changeOpen(true)
   }
 
   function handleApply() {
-    setApplied(draft)
+    onChange(draft)
     changeOpen(false)
   }
 
   function handleClear() {
-    const empty = { min: null, max: null }
-    setDraft(empty)
-    setApplied(empty)
+    onChange({ min: null, max: null })
     changeOpen(false)
   }
 
-  const isActive = applied.min !== null || applied.max !== null
+  const isActive = value.min !== null || value.max !== null
 
   function buttonLabel() {
     if (!isActive) return 'Hinta'
     const fmt = (n: number) => n.toLocaleString('fi-FI') + ' €'
-    if (applied.min !== null && applied.max !== null)
-      return `${fmt(applied.min)} - ${fmt(applied.max)}`
-    if (applied.min !== null) return `${fmt(applied.min)} -`
-    return `- ${fmt(applied.max!)}`
+    if (value.min !== null && value.max !== null)
+      return `${fmt(value.min)} - ${fmt(value.max)}`
+    if (value.min !== null) return `${fmt(value.min)} -`
+    return `- ${fmt(value.max!)}`
   }
 
-  function fmt(n: number | null) {
+  function fmtInput(n: number | null) {
     return n !== null ? n.toLocaleString('fi-FI') : ''
   }
 
@@ -99,7 +100,7 @@ export default function PriceFilter({ onOpenChange }: { onOpenChange?: (open: bo
                 type="text"
                 inputMode="numeric"
                 placeholder="Ei alarajaa"
-                value={fmt(draft.min)}
+                value={fmtInput(draft.min)}
                 onChange={(e) =>
                   setDraft((d) => ({ ...d, min: parseInput(e.target.value) }))
                 }
@@ -112,7 +113,7 @@ export default function PriceFilter({ onOpenChange }: { onOpenChange?: (open: bo
                 type="text"
                 inputMode="numeric"
                 placeholder="Ei ylärajaa"
-                value={fmt(draft.max)}
+                value={fmtInput(draft.max)}
                 onChange={(e) =>
                   setDraft((d) => ({ ...d, max: parseInput(e.target.value) }))
                 }
