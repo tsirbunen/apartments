@@ -43,3 +43,6 @@ next-env.d.ts
 notes.md 
 CLAUDE.md 
 .claude/
+
+push_to_github
+push_to_github.pub
