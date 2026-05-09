@@ -59,10 +59,10 @@ export default function SizeFilter({ value, onChange, onOpenChange }: Props) {
     <div ref={ref} className="relative">
       <button
         onClick={handleOpen}
-        className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-sm transition-colors ${
+        className={`flex items-center gap-1 px-3 py-1 rounded-full border text-sm transition-colors ${
           isActive
             ? 'border-gray-900 bg-gray-900 text-white'
-            : 'border-gray-300 text-gray-700 hover:border-gray-500'
+            : 'border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200'
         }`}
       >
         {buttonLabel()}

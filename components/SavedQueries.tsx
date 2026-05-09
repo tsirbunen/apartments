@@ -19,6 +19,7 @@ function filtersEqual(a: Filters, b: Filters) {
 
 export default function SavedQueries({ filters, onLoad }: Props) {
   const [queries, setQueries] = useState<SavedQuery[]>([])
+  const [open, setOpen] = useState(false)
   const [saving, setSaving] = useState(false)
   const [name, setName] = useState('')
   const ref = useRef<HTMLDivElement>(null)
@@ -29,11 +30,15 @@ export default function SavedQueries({ filters, onLoad }: Props) {
 
   useEffect(() => {
     function onMouseDown(e: MouseEvent) {
-      if (ref.current && !ref.current.contains(e.target as Node)) setSaving(false)
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setOpen(false)
+        setSaving(false)
+        setName('')
+      }
     }
-    if (saving) document.addEventListener('mousedown', onMouseDown)
+    document.addEventListener('mousedown', onMouseDown)
     return () => document.removeEventListener('mousedown', onMouseDown)
-  }, [saving])
+  }, [])
 
   function handleSave() {
     const trimmed = name.trim()
@@ -60,40 +65,98 @@ export default function SavedQueries({ filters, onLoad }: Props) {
   const isAlreadySaved = queries.some((q) => filtersEqual(q.filters, filters))
 
   return (
-    <div ref={ref} className="flex flex-wrap items-center gap-2">
-      {queries.map((q) => (
-        <span
-          key={q.id}
-          className="flex items-center gap-1 rounded-full bg-gray-200 px-3 py-1 text-sm text-gray-700 cursor-pointer hover:bg-gray-300"
-          onClick={() => onLoad(q.filters)}
+    <div ref={ref} className="flex items-center gap-2">
+      {/* Dropdown: list of saved queries */}
+      <div className="relative">
+        <button
+          onClick={() => {
+            setOpen((o) => !o)
+            setSaving(false)
+          }}
+          className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-sm transition-colors ${
+            open
+              ? 'border-gray-900 bg-gray-900 text-white'
+              : 'border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200'
+          }`}
         >
-          {q.name}
-          <button
-            onClick={(e) => {
-              e.stopPropagation()
-              handleDelete(q.id)
-            }}
-            aria-label={`Poista ${q.name}`}
-            className="ml-0.5 text-red-400 hover:text-red-600 leading-none"
+          Tallennetut haut
+          {queries.length > 0 && (
+            <span
+              className={`text-xs font-semibold rounded-full w-4 h-4 flex items-center justify-center leading-none ${
+                open ? 'bg-white text-gray-900' : 'bg-gray-200 text-gray-600'
+              }`}
+            >
+              {queries.length}
+            </span>
+          )}
+          <svg
+            className={`w-3 h-3 transition-transform ${open ? 'rotate-180' : ''}`}
+            viewBox="0 0 12 12"
+            fill="none"
           >
-            ×
-          </button>
-        </span>
-      ))}
+            <path
+              d="M2 4l4 4 4-4"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
+        </button>
 
+        {open && (
+          <div className="absolute top-full mt-2 left-0 z-30 w-64 rounded-2xl bg-white shadow-xl border border-gray-100 overflow-hidden">
+            {queries.length === 0 ? (
+              <p className="px-4 py-3 text-sm text-gray-400">Ei tallennettuja hakuja</p>
+            ) : (
+              <ul className="divide-y divide-gray-100 max-h-56 overflow-y-auto">
+                {queries.map((q) => (
+                  <li
+                    key={q.id}
+                    className="group flex items-center justify-between gap-2 px-4 py-2.5 hover:bg-gray-50 cursor-pointer"
+                    onClick={() => {
+                      onLoad(q.filters)
+                      setOpen(false)
+                    }}
+                  >
+                    <span className="text-sm text-gray-800 truncate">{q.name}</span>
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleDelete(q.id)
+                      }}
+                      aria-label={`Poista ${q.name}`}
+                      className="shrink-0 text-red-400 hover:text-red-600 leading-none"
+                    >
+                      ×
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+      </div>
+
+      {/* Save button — only shown when current filters aren't already saved */}
       {!isAlreadySaved && (
         <div className="relative">
           <button
-            onClick={() => setSaving((s) => !s)}
-            className={`flex items-center px-3 py-1 rounded-lg text-xs font-medium transition-colors ${
-              saving ? 'bg-gray-900 text-white' : 'bg-gray-200 text-gray-500 hover:bg-gray-300'
+            onClick={() => {
+              setSaving((s) => !s)
+              setOpen(false)
+            }}
+            className={`flex items-center px-3 py-1 rounded-full border text-sm transition-colors ${
+              saving
+                ? 'border-gray-900 bg-gray-900 text-white'
+                : 'border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200'
             }`}
           >
             + Tallenna haku
           </button>
 
           {saving && (
-            <div className="absolute top-full mt-2 left-0 z-20 w-72 rounded-2xl bg-white p-4 shadow-xl">
+            <div className="absolute top-full mt-2 left-0 z-30 w-64 rounded-2xl bg-white shadow-xl border border-gray-100 p-4">
               <p className="mb-3 text-sm font-medium text-gray-900">Tallenna haku</p>
               <input
                 type="text"
@@ -103,13 +166,19 @@ export default function SavedQueries({ filters, onLoad }: Props) {
                 onChange={(e) => setName(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleSave()
-                  if (e.key === 'Escape') setSaving(false)
+                  if (e.key === 'Escape') {
+                    setSaving(false)
+                    setName('')
+                  }
                 }}
                 className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-gray-900 focus:outline-none"
               />
               <div className="mt-3 flex gap-2">
                 <button
-                  onClick={() => { setSaving(false); setName('') }}
+                  onClick={() => {
+                    setSaving(false)
+                    setName('')
+                  }}
                   className="flex-1 rounded-lg border border-gray-300 px-3 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50"
                 >
                   Peruuta

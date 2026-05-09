@@ -10,10 +10,10 @@ export default function ToggleFilter({ label, value, onChange }: Props) {
   return (
     <button
       onClick={() => onChange(!value)}
-      className={`flex items-center gap-1 px-3 py-1.5 rounded-full border text-sm transition-colors ${
+      className={`flex items-center gap-1 px-3 py-1 rounded-full border text-sm transition-colors ${
         value
           ? 'border-gray-900 bg-gray-900 text-white'
-          : 'border-gray-300 text-gray-700 hover:border-gray-500'
+          : 'border-gray-300 bg-gray-100 text-gray-700 hover:bg-gray-200'
       }`}
     >
       {label}

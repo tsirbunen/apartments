@@ -64,8 +64,8 @@ export default function LocationSelector({ locations, onChange }: Props) {
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={handleKeyDown}
         onBlur={add}
-        placeholder={'+ muu kaupunginosa'}
-        className="w-48 rounded-full ring-1 ring-dashed ring-gray-300 px-2.5 py-2.5 text-xs text-gray-700 placeholder:text-gray-400 focus:ring-gray-500 focus:outline-none bg-transparent"
+        placeholder={'+ muu'}
+        className="w-48 rounded-full ring-1 ring-dashed ring-gray-300 px-3 py-1 text-sm text-gray-700 placeholder:text-gray-400 focus:ring-gray-500 focus:outline-none bg-gray-100"
       />
     </div>
   )

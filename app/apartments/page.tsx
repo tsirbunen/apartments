@@ -34,15 +34,22 @@ export default function ApartmentsPage() {
     const { price, size, rooms, omaTontti, uudiskohde } = filters
     const fmtEur = (n: number) => n.toLocaleString('fi-FI') + ' €'
     const fmtSqm = (n: number) => n.toLocaleString('fi-FI') + ' m²'
-    if (price.min != null && price.max != null) chips.push(`${fmtEur(price.min)}–${fmtEur(price.max)}`)
+    if (price.min != null && price.max != null)
+      chips.push(`${fmtEur(price.min)}–${fmtEur(price.max)}`)
     else if (price.min != null) chips.push(`min ${fmtEur(price.min)}`)
     else if (price.max != null) chips.push(`max ${fmtEur(price.max)}`)
     if (rooms.length > 0) {
       const s = [...rooms].sort((a, b) => a - b)
-      const isRange = s.length > 1 && s.every((n, i) => i === 0 || n === s[i - 1] + 1)
-      chips.push(isRange ? `${s[0]}-${s[s.length - 1]}h` : s.map((n) => n + 'h').join(', '))
+      const isRange =
+        s.length > 1 && s.every((n, i) => i === 0 || n === s[i - 1] + 1)
+      chips.push(
+        isRange
+          ? `${s[0]}-${s[s.length - 1]}h`
+          : s.map((n) => n + 'h').join(', ')
+      )
     }
-    if (size.min != null && size.max != null) chips.push(`${fmtSqm(size.min)}–${fmtSqm(size.max)}`)
+    if (size.min != null && size.max != null)
+      chips.push(`${fmtSqm(size.min)}–${fmtSqm(size.max)}`)
     else if (size.min != null) chips.push(`min ${fmtSqm(size.min)}`)
     else if (size.max != null) chips.push(`max ${fmtSqm(size.max)}`)
     if (omaTontti) chips.push('Oma tontti')
@@ -52,10 +59,14 @@ export default function ApartmentsPage() {
 
   useEffect(() => {
     const params = new URLSearchParams()
-    if (filters.price.min != null) params.set('priceMin', String(filters.price.min))
-    if (filters.price.max != null) params.set('priceMax', String(filters.price.max))
-    if (filters.size.min != null) params.set('sizeMin', String(filters.size.min))
-    if (filters.size.max != null) params.set('sizeMax', String(filters.size.max))
+    if (filters.price.min != null)
+      params.set('priceMin', String(filters.price.min))
+    if (filters.price.max != null)
+      params.set('priceMax', String(filters.price.max))
+    if (filters.size.min != null)
+      params.set('sizeMin', String(filters.size.min))
+    if (filters.size.max != null)
+      params.set('sizeMax', String(filters.size.max))
     filters.rooms.forEach((r) => params.append('rooms', String(r)))
     if (filters.omaTontti) params.set('omaTontti', '1')
 
@@ -89,15 +100,38 @@ export default function ApartmentsPage() {
           <button
             onClick={() => setFiltersOpen((o) => !o)}
             className="absolute top-0 right-0 text-gray-400 hover:text-gray-700"
-            aria-label={filtersOpen ? 'Sulje suodattimet' : 'Muokkaa suodattimia'}
+            aria-label={
+              filtersOpen ? 'Sulje suodattimet' : 'Muokkaa suodattimia'
+            }
           >
             {filtersOpen ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
               </svg>
             ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="4" y1="6" x2="20" y2="6" />
+                <line x1="8" y1="12" x2="16" y2="12" />
+                <line x1="11" y1="18" x2="13" y2="18" />
               </svg>
             )}
           </button>
@@ -105,12 +139,19 @@ export default function ApartmentsPage() {
           {filtersOpen ? (
             <>
               <div className="mb-5">
-                <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">Kaupunginosa Helsingissä</p>
-                <LocationSelector locations={locations} onChange={setLocations} />
+                <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">
+                  Kaupunginosa Helsingissä
+                </p>
+                <LocationSelector
+                  locations={locations}
+                  onChange={setLocations}
+                />
               </div>
 
               <div className="relative z-30 mb-5">
-                <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">Rajaa hakua</p>
+                <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">
+                  Rajaa hakua
+                </p>
                 <div className="flex flex-wrap gap-2">
                   <PriceFilter
                     value={filters.price}
@@ -141,7 +182,9 @@ export default function ApartmentsPage() {
               </div>
 
               <div className="relative z-10">
-                <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">Haut</p>
+                <p className="mb-1.5 text-xs font-bold text-gray-400 uppercase tracking-wide">
+                  Tallennetut haut
+                </p>
                 <SavedQueries filters={filters} onLoad={(f) => setFilters(f)} />
               </div>
             </>
@@ -152,11 +195,16 @@ export default function ApartmentsPage() {
             >
               {filterChips().length === 0 ? (
                 <span className="text-sm text-gray-400">Ei rajauksia</span>
-              ) : filterChips().map((chip) => (
-                <span key={chip} className="rounded-full bg-gray-200 px-3 py-1 text-xs text-gray-500">
-                  {chip}
-                </span>
-              ))}
+              ) : (
+                filterChips().map((chip) => (
+                  <span
+                    key={chip}
+                    className="rounded-full bg-gray-200 px-3 py-1 text-xs text-gray-500"
+                  >
+                    {chip}
+                  </span>
+                ))
+              )}
             </div>
           )}
         </div>
@@ -167,7 +215,7 @@ export default function ApartmentsPage() {
           ) : loading ? (
             'Ladataan…'
           ) : (
-            `${cards.length} asuntoa löytyi`
+            `${cards.length} kohdetta`
           )}
         </p>
 
