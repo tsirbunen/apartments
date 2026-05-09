@@ -9,6 +9,7 @@ import SizeFilter from '@/components/SizeFilter'
 import ToggleFilter from '@/components/ToggleFilter'
 import RoomsFilter from '@/components/RoomsFilter'
 import SavedQueries from '@/components/SavedQueries'
+import LocationSelector from '@/components/LocationSelector'
 
 export default function ApartmentsPage() {
   const [cards, setCards] = useState<OikotieCard[]>([])
@@ -16,6 +17,7 @@ export default function ApartmentsPage() {
   const [loading, setLoading] = useState(true)
   const [openCount, setOpenCount] = useState(0)
   const [filters, setFilters] = useState<Filters>(DEFAULT_FILTERS)
+  const [locations, setLocations] = useState<string[]>(['Lauttasaari'])
 
   function handleOpenChange(delta: 1 | -1) {
     setOpenCount((c) => Math.max(0, c + delta))
@@ -43,9 +45,9 @@ export default function ApartmentsPage() {
       )}
 
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-2xl font-bold text-gray-900 mb-1">
-          Lauttasaari, Helsinki
-        </h1>
+        <div className="mb-3">
+          <LocationSelector locations={locations} onChange={setLocations} />
+        </div>
 
         <div className="relative z-20 mb-6 flex flex-wrap gap-2">
           <PriceFilter

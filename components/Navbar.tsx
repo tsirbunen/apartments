@@ -21,8 +21,8 @@ export default function Navbar() {
   return (
     <nav className="bg-white border-b border-gray-200 px-4">
       <div className="max-w-6xl mx-auto flex items-center h-14 gap-6">
-        {link('/', 'Home')}
-        {link('/apartments', 'Apartments')}
+        {link('/', 'Etusivu')}
+        {link('/apartments', 'Asunnot')}
       </div>
     </nav>
   )
