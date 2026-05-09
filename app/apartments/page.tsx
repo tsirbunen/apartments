@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Link from 'next/link'
 import type { OikotieCard } from '@/services/oikotie'
 import ApartmentCard from '@/components/ApartmentCard'
 
@@ -24,9 +23,6 @@ export default function ApartmentsPage() {
   return (
     <div className="min-h-screen bg-gray-50 py-10 px-4">
       <div className="max-w-6xl mx-auto">
-        <Link href="/" className="text-xs text-gray-400 hover:text-gray-600 mb-6 inline-block">
-          ← Back
-        </Link>
         <h1 className="text-2xl font-bold text-gray-900 mb-1">
           Lauttasaari, Helsinki
         </h1>
